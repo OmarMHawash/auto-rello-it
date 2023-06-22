@@ -1,0 +1,5 @@
+"Title", "Description", "Comment"
+"Design & Research", "No limit on the list size, but we should reconsider if it gets long."
+"To Do", "This is a list of things that are good to pull off to work on, prioritized.\n\nIf there are too few items here, we should swarm against getting tasks ready for work."
+"Doing", "These are the things that folks are working on.\n\nAll our engineers should have at least one item in this state.\n\nIf there are too few things here, they should be pulled off Todo.\n\nWhen doing is done, cards move to Code Review."
+"Code Review", "This list is for items in code review.\n\nWhen a task has gotten approval, it moves off to Testing.\n\nIf there are too many cards here, we should break off from other tasks to get code review done."
