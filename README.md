@@ -10,5 +10,5 @@
 </p>
 
 <p align="center">
-[![watch demo](https://github.com/OmarMHawash/auto-rello-it/docs/demo.mp4)]
+![demo](https://github.com/OmarMHawash/auto-rello-it/assets/81506354/d037f301-e728-4da7-aafb-724ad7ca1aee)
 </p>
