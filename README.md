@@ -10,8 +10,9 @@
 </p>
 
 ## Demo video
-
 ![demo](docs/demo.gif)
+
+<em>for version: v0.1.0</em>
 
 ### Hot Keys:
 
@@ -19,9 +20,15 @@ F10 to quit the running script
 
 ### Notes:
 
-- warm up your trello page, or use warmup function
-- use trello in white mode
-- have a chrome tab opened up
+- Trello left side-bar must be closed.
+- For screens with 1920*1080 dimensions.
+- Use trello in white mode.
+- Better to have a chrome tab opened up.
+
+
+### Usage
+- Warm up your trello board, or use commented warmup function.
+- If mouse tooltip showed: Waiting... for too long, restart the script.
 
 ### Available factors
 
