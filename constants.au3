@@ -1,7 +1,8 @@
-$board_url="trello.com/b/HZLiKp4p/kanban-template"
-$file_name="\data.csv"
+; --------- board url here -----------
+$board_url = "trello.com/b/HZLiKp4p/kanban-template"
+$file_name = "\data.csv"
 
-$file_header='"Title", "Description", "Comment"'
+$file_header = '"Title", "Description", "Comments"'
 
 $s = 50
 $m = 100
@@ -15,9 +16,9 @@ $cardY = 265
 $list_width = 300
 
 ; Commands
-$start_chrome="start chrome"
-$delete_file= "del "& @WorkingDir & $file_name
-$create_file= "type nul > " & @WorkingDir & $file_name
+$start_chrome = "start chrome"
+$delete_file = "del "& @WorkingDir & $file_name
+$create_file = "type nul > " & @WorkingDir & $file_name
 
 Local Const $sFile = @WorkingDir & $file_name
 Local $iFileExists = FileExists($sFile)
