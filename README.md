@@ -13,6 +13,8 @@
 
 ![demo](docs/demo.gif)
 
+<em>for version: v0.1.0</em>
+
 ### Hot Keys:
 
 F10 to quit the running script
@@ -24,12 +26,19 @@ F10 to quit the running script
 - warm up your trello page, or use warmup function
 - use trello in white mode
 - have a chrome tab opened up
-- If waiting showed up for too long, quit and restart the scrint (network is slow)
+- Warm up your trello board, or use commented warmup function.
+- If mouse tooltip showed: Waiting... for too long, restart the script.
 
 #### CSV Data format
 
 - The ',' character, is replaced with the hexadecimal value '0x2C'
 - end line (LF & CRLF) are replaced with '\n'
+- Trello left side-bar must be closed.
+- For screens with 1920\*1080 dimensions.
+- Use trello in white mode.
+- Better to have a chrome tab opened up.
+
+### Usage
 
 ### Available factors
 
