@@ -19,9 +19,17 @@ F10 to quit the running script
 
 ### Notes:
 
+#### Using the script
+
 - warm up your trello page, or use warmup function
 - use trello in white mode
 - have a chrome tab opened up
+- If waiting showed up for too long, quit and restart the scrint (network is slow)
+
+#### CSV Data format
+
+- The ',' character, is replaced with the hexadecimal value '0x2C'
+- end line (LF & CRLF) are replaced with '\n'
 
 ### Available factors
 

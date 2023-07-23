@@ -74,10 +74,13 @@ Func waitScreen($waitX, $waitY)
   Sleep($l)
 EndFunc
 
-Func saveCardData()
+Func saveCardData($idx)
   $tf = 0.8
+  Global $gId = $idx
+  $id = '"' & $idx & '"'
   TABs(3)
   copyAllBox()
+  Global $gTitle = ClipGet()
   $title = '"' & ClipGet() & '"'
   Sleep($m * $tf)
 
@@ -88,9 +91,83 @@ Func saveCardData()
   $desc = '"' & ClipGet() & '"'
   $desc = sanitDesc($desc)
 
-  $doc = $title & ", " & $desc
+  $doc = $id & "," & $title & ", " & $desc
   file_write($doc)
+
+  Sleep($s * $tf)
+  saveImages()
+
+  Sleep($m * $tf)
   ESCs(2)
+EndFunc
+
+Func SavingSleepTimer($x,$y,$mustBe)
+    For $i = 1 To 1 Step 1
+      $checkCurrent = PixelGetColor($x,$y)
+      If $checkCurrent=$mustBe Then
+      Else
+        $i=$i-1
+        Sleep(50)
+      EndIf
+    Next
+	Sleep(50)
+EndFunc
+
+Func msgBoxNext()
+  $msg = MsgBox(4, "go ahead and save one image", "Click Yes when you are done")
+  $file_bar = true
+  If $msg = 6 Then
+    Return True
+  Else
+    Return False
+  EndIf
+  
+EndFunc
+
+Func saveImages()
+  TABs(4)
+  Send("{ENTER}")
+  ; if $file_bar = false Then
+  ;   msgBoxNext()
+  ; EndIf
+  saveXImage()
+  ; todo: make that a loop
+  ; $getArrow = $arrow_color
+  ; While ($getArrow = $arrow_color)
+  ;   Send("{RIGHT}")
+  ;   saveXImage()
+  ;   Sleep(200)
+  ; WEnd
+  ; ToolTip("Finished Saving Images")
+  ; Sleep(200)
+  ; ToolTip("looK!" & $getArrow)
+  ; Sleep(50000)
+EndFunc
+
+Func saveXImage()
+  $imgIdx = 1
+  MouseClick($MOUSE_CLICK_RIGHT, 470, 200, 1)
+  Sleep($m)
+  MouseClick($MOUSE_CLICK_LEFT, 500, 236, 1)
+  Sleep($l)
+  ; $getArrow = PixelGetColor($arrow[0], $arrow[1])
+  copyAllBox() 
+  $currName = ClipGet()
+  $ext = StringSplit($currName, ".")
+  Sleep($l)
+  Global $imgName = $gId & "_" & $imgIdx & "." & $ext[2]
+  Sleep($m)
+  Send($imgName)
+  Sleep($m)
+  Send("{ENTER}")
+  Sleep($m)
+  FileMove($save_directory & $imgName, $images_directory)
+  ; ToolTip($save_directory & $imgName & " moved to " & $save_directory)
+  ; Sleep(999999)
+
+  ; $moveCmd = "move " & "'" & $save_directory & $imgName & "' '" & $images_directory & "'"
+  ; ToolTip($moveCmd)
+  ; RunWait(@ComSpec & $moveCmd)
 EndFunc
 
 Func killChrome()

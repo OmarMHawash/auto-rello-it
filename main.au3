@@ -4,6 +4,7 @@
 #include <MsgBoxConstants.au3>
 #include <WindowsConstants.au3>
 #include <FileConstants.au3>
+#include <WinAPIFiles.au3>
 #include "./constants.au3"
 #include "./functions.au3"
 
@@ -16,11 +17,9 @@ initTrello("work")
 
 For $i = 1 To 4
   clickWaitScreen($card1X, $cardY, $card1X, $cardY)
-  saveCardData()
+  saveCardData($i)
   Sleep($xl)
   moveCardX($card1X, $cardY, $list_width)
 Next
 
 killChrome()
-
-; TODO: fix for cards without images

@@ -1,8 +1,9 @@
-; --------- board url here -----------
 $board_url = "trello.com/b/HZLiKp4p/kanban-template"
 $file_name = "\data.csv"
 
-$file_header = '"Title", "Description", "Comments"'
+$file_header = '"id", "Title", "Description", "Comments"'
+$save_directory = "C:\Users\OmarMH\Pictures\saved pictures\"
+$images_directory = @WorkingDir & "\images"
 
 $s = 50
 $m = 100
@@ -14,6 +15,13 @@ $xxxl = 2000
 $card1X = 165
 $cardY = 265
 $list_width = 300
+$arrow_color = 6713458
+Local $arrow[2];
+Local $file_bar = false
+
+Global $getArrow = 0
+$arrow[0] = 925
+$arrow[1] = 949
 
 ; Commands
 $start_chrome = "start chrome"
