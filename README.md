@@ -42,8 +42,11 @@ F10 to quit the running script
 
 ### Available factors
 
-- $s -> $xxxl :
+- $s -> $xl :
   global static time sleep speed
 
-- $tf {time factor} available in network blocked actions :
-  function scoped time speed factors
+- $tf {time factor} for network blocking actions, which is a function scoped delay factors
+
+### known issues
+
+- last card image is not being saved.

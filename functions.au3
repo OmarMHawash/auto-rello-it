@@ -4,18 +4,19 @@ Func Quit()
   Exit
 EndFunc
 
+Func debug($message)
+  ToolTip($message)
+  Sleep($xl * 2.5)
+EndFunc
+
 Func file_write($record)
   If $iFileExists Then
     FileWriteLine(@WorkingDir & $file_name, $record)
   EndIf
 EndFunc
 
-Func initTrello($status)
-  If $status = "warm_up" Then
-    $tf = 4
-  Else
-    $tf = 0.8
-  EndIf
+Func initTrello()
+  $tf = 0.8
 
   Send("{LWINDOWN}{m down}{m up}{LWINUP}") ; minimize all windows	
   RunWait(@ComSpec & " /c " & $start_chrome) 
@@ -27,38 +28,21 @@ Func initTrello($status)
   Send("{Esc}")
   Send($board_url)
   Send("{ENTER}")
-  waitScreen(22, 1000)
-  Sleep($xxl * $tf )
-  ;---- Board Opened! ----;
-  if $status = "warm_up" Then
-    killChrome()
+  waitScreen(22, 1000, "no_click")
+  Sleep($xl * $tf)
+
+EndFunc
+
+
+Func waitScreen($waitX, $waitY, $isClick = 0)
+  $old_screen = PixelGetColor($waitX, $waitY)
+  $new_screen = $old_screen
+
+  If $isClick = "click" Then
+    Sleep($m)
+    MouseClick($MOUSE_CLICK_LEFT, $waitX, $waitY)
   EndIf
 
-EndFunc
-
-Func clickWaitScreen($waitX, $waitY, $clickX, $clickY)
-  $old_screen = PixelGetColor($waitX, $waitY)
-  $new_screen = $old_screen
-  Sleep($m)
-  MouseClick($MOUSE_CLICK_LEFT, $clickX, $clickY, 1)
-  Sleep($m)
-
-  While True
-    If $old_screen = $new_screen Then
-      $new_screen = PixelGetColor($waitX, $waitY)
-      ToolTip("Waiting...")
-      Sleep($m)
-    Else
-      ToolTip("")
-      ExitLoop
-    EndIf
-  WEnd
-  Sleep($l)
-EndFunc
-
-Func waitScreen($waitX, $waitY)
-  $old_screen = PixelGetColor($waitX, $waitY)
-  $new_screen = $old_screen
   Sleep($m)
 
   While True
@@ -91,14 +75,14 @@ Func saveCardData($idx)
   $desc = '"' & ClipGet() & '"'
   $desc = sanitDesc($desc)
 
-  $doc = $id & "," & $title & ", " & $desc
-  file_write($doc)
+  $row = $id & "," & $title & ", " & $desc
+  file_write($row)
 
   Sleep($s * $tf)
-  saveImages()
+  saveAllImages()
 
   Sleep($m * $tf)
-  ESCs(2)
+  ESCs(3)
 EndFunc
 
 Func SavingSleepTimer($x,$y,$mustBe)
@@ -113,44 +97,19 @@ Func SavingSleepTimer($x,$y,$mustBe)
 	Sleep(50)
 EndFunc
 
-Func msgBoxNext()
-  $msg = MsgBox(4, "go ahead and save one image", "Click Yes when you are done")
-  $file_bar = true
-  If $msg = 6 Then
-    Return True
-  Else
-    Return False
-  EndIf
-  
-EndFunc
-
-Func saveImages()
-  TABs(4)
+Func saveAllImages()
+  TABs(5)
   Send("{ENTER}")
-  ; if $file_bar = false Then
-  ;   msgBoxNext()
-  ; EndIf
-  saveXImage()
-  ; todo: make that a loop
-  ; $getArrow = $arrow_color
-  ; While ($getArrow = $arrow_color)
-  ;   Send("{RIGHT}")
-  ;   saveXImage()
-  ;   Sleep(200)
-  ; WEnd
-  ; ToolTip("Finished Saving Images")
-  ; Sleep(200)
-  ; ToolTip("looK!" & $getArrow)
-  ; Sleep(50000)
+  Sleep($m)
+  saveImage()
 EndFunc
 
-Func saveXImage()
+Func saveImage()
   $imgIdx = 1
   MouseClick($MOUSE_CLICK_RIGHT, 470, 200, 1)
   Sleep($m)
   MouseClick($MOUSE_CLICK_LEFT, 500, 236, 1)
   Sleep($l)
-  ; $getArrow = PixelGetColor($arrow[0], $arrow[1])
   copyAllBox() 
   $currName = ClipGet()
   $ext = StringSplit($currName, ".")
@@ -162,12 +121,10 @@ Func saveXImage()
   Send("{ENTER}")
   Sleep($m)
   FileMove($save_directory & $imgName, $images_directory)
-  ; ToolTip($save_directory & $imgName & " moved to " & $save_directory)
-  ; Sleep(999999)
+  debug("Image moved to: " & $save_directory & $imgName)
 
-  ; $moveCmd = "move " & "'" & $save_directory & $imgName & "' '" & $images_directory & "'"
-  ; ToolTip($moveCmd)
-  ; RunWait(@ComSpec & $moveCmd)
+  FileDelete($images_directory & $imgName)
+  debug("Image deleted to: " & $images_directory & $imgName)
 EndFunc
 
 Func killChrome()
@@ -177,12 +134,9 @@ EndFunc
 Func moveCardX($xPos, $yPos, $width)
   $fixOffset = 20
   MouseMove($xPos, $yPos, 1)
-  ; Sleep($s) 
   MouseDown("left")
-  ; Sleep($s)
   MouseMove($xPos+$width, $yPos-$fixOffset,1)
   MouseUp("left")
-  ; Sleep($s)
 EndFunc
 
 Func TABs($num)
