@@ -6,18 +6,17 @@ EndFunc
 
 Func debug($message)
   ToolTip($message)
-  Sleep($xl * 2.5)
+  Sleep($xl * 25)
 EndFunc
 
 Func file_write($record)
   If $iFileExists Then
-    FileWriteLine(@WorkingDir & $file_name, $record)
+    FileWriteLine(@WorkingDir & $result_csv, $record)
   EndIf
 EndFunc
 
 Func initTrello()
   $tf = 0.8
-
   Send("{LWINDOWN}{m down}{m up}{LWINUP}") ; minimize all windows	
   RunWait(@ComSpec & " /c " & $start_chrome) 
   Sleep($m*$tf)
@@ -27,22 +26,21 @@ Func initTrello()
   Sleep($m*$tf)
   Send("{Esc}")
   Send($board_url)
+  Sleep($m*$tf)
   Send("{ENTER}")
+  Sleep($m*$tf)
   waitScreen(22, 1000, "no_click")
   Sleep($xl * $tf)
-
 EndFunc
 
 
 Func waitScreen($waitX, $waitY, $isClick = 0)
   $old_screen = PixelGetColor($waitX, $waitY)
   $new_screen = $old_screen
-
   If $isClick = "click" Then
     Sleep($m)
     MouseClick($MOUSE_CLICK_LEFT, $waitX, $waitY)
   EndIf
-
   Sleep($m)
 
   While True
@@ -100,12 +98,13 @@ EndFunc
 Func saveAllImages()
   TABs(5)
   Send("{ENTER}")
-  Sleep($m)
+  Sleep($l)
   saveImage()
 EndFunc
 
 Func saveImage()
   $imgIdx = 1
+  Sleep($m)
   MouseClick($MOUSE_CLICK_RIGHT, 470, 200, 1)
   Sleep($m)
   MouseClick($MOUSE_CLICK_LEFT, 500, 236, 1)
@@ -117,14 +116,14 @@ Func saveImage()
   Global $imgName = $gId & "_" & $imgIdx & "." & $ext[2]
   Sleep($m)
   Send($imgName)
-  Sleep($m)
   Send("{ENTER}")
+  ToolTip("Saving image: " & $imgName)
+  Sleep($l)
+  ToolTip("")
+  FileMove($chrome_save_dir & $imgName, $images_result_dir)
+  FileDelete($images_result_dir & $imgName)
+  ; debug("--deleting: " & $images_result_dir & $imgName)
   Sleep($m)
-  FileMove($save_directory & $imgName, $images_directory)
-  debug("Image moved to: " & $save_directory & $imgName)
-
-  FileDelete($images_directory & $imgName)
-  debug("Image deleted to: " & $images_directory & $imgName)
 EndFunc
 
 Func killChrome()

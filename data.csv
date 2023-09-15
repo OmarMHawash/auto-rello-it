@@ -1,5 +1,0 @@
-"id", "Title", "Description", "Comments"
-"1","Testing", "Cards come here after being code reviewed0x2C and we're in a place for QA and fixing things QA finds. Design review also happens at this stage.\n\nIf we have too many cards here0x2C we should throw a flag and figure out whether we're building things that take too many passes of QA0x2C or if we're bottlenecked on QA time."
-"2","Code Review", "This list is for items in code review.\n\nWhen a task has gotten approval0x2C it moves off to Testing.\n\nIf there are too many cards here0x2C we should break off from other tasks to get code review done."
-"3","Doing", "These are the things that folks are working on.\n\nAll our engineers should have at least one item in this state.\n\nIf there are too few things here0x2C they should be pulled off Todo.\n\nWhen doing is done0x2C cards move to Code Review."
-"4","To Do", "This is a list of things that are good to pull off to work on0x2C prioritized.\n\nIf there are too few items here0x2C we should swarm against getting tasks ready for work."
