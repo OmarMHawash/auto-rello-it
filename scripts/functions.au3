@@ -1,21 +1,14 @@
-
-HotKeySet("{F10}", "Quit")
-Func Quit()
-  Exit
-EndFunc
-
-Func debug($message)
-  ToolTip($message)
-  Sleep($xl * 25)
-EndFunc
-
-Func file_write($record)
+Func file_write($record, $target)
+  if $target = $log_file Then
+    $logCount += 1
+  EndIf
   If $iFileExists Then
-    FileWriteLine(@WorkingDir & $result_csv, $record)
+    FileWriteLine(@WorkingDir & $target, $record)
   EndIf
 EndFunc
 
 Func initTrello()
+  file_write($logCount & " Starting Trello..." & @CRLF, $log_file)
   $tf = 0.8
   Send("{LWINDOWN}{m down}{m up}{LWINUP}") ; minimize all windows	
   RunWait(@ComSpec & " /c " & $start_chrome) 
@@ -28,75 +21,65 @@ Func initTrello()
   Send($board_url)
   Sleep($m*$tf)
   Send("{ENTER}")
-  Sleep($m*$tf)
-  waitScreen(22, 1000, "no_click")
-  Sleep($xl * $tf)
+  waitScreen($bEdge[0], $bEdge[1])
+  waitScreen($bEdge[0], $bEdge[1])
+  waitScreen($bEdge[0], $bEdge[1])
+  file_write($logCount & " Loaded Trello!" & @CRLF, $log_file)
 EndFunc
 
+Func setupFiles()
+  For $command In $setupCommands
+    RunWait(@ComSpec & " /c " & $command)
+  Next
+  file_write($csv_header, $result_csv)
+  file_write($logCount & " Files all setup!" & @CRLF, $log_file)
+EndFunc
 
-Func waitScreen($waitX, $waitY, $isClick = 0)
-  $old_screen = PixelGetColor($waitX, $waitY)
+Func waitScreen($waitX, $waitY)
+  file_write($logCount & " Waiting Screen for: " & $waitX & ", " & $waitY & @CRLF, $log_file)
+  $old_screen = PixelGetColor($waitX , $waitY)
   $new_screen = $old_screen
-  If $isClick = "click" Then
-    Sleep($m)
-    MouseClick($MOUSE_CLICK_LEFT, $waitX, $waitY)
-  EndIf
-  Sleep($m)
-
+  Sleep($s)
   While True
     If $old_screen = $new_screen Then
       $new_screen = PixelGetColor($waitX, $waitY)
       ToolTip("Waiting...")
-      Sleep($m)
+      Sleep($s)
     Else
       ToolTip("")
       ExitLoop
     EndIf
   WEnd
-  Sleep($l)
+  Sleep($s)
 EndFunc
 
 Func saveCardData($idx)
   $tf = 0.8
+  MouseClick($MOUSE_CLICK_LEFT, $cardX, $cardY)
+  waitScreen($cardX, $cardY)
   Global $gId = $idx
-  $id = '"' & $idx & '"'
-  TABs(3)
+  repeatKey("{TAB}", 3)
   copyAllBox()
-  Global $gTitle = ClipGet()
-  $title = '"' & ClipGet() & '"'
+  $title = ClipGet()
   Sleep($m * $tf)
 
-  TABs(3)
+  repeatKey("{TAB}", 3)
   Send("{ENTER}")
   Sleep($m * $tf)
   copyAllBox()
-  $desc = '"' & ClipGet() & '"'
-  $desc = sanitDesc($desc)
+  $desc = sanitDesc(ClipGet())
 
-  $row = $id & "," & $title & ", " & $desc
-  file_write($row)
-
+  $row = $idx  & "," & $title & "," & $desc
+  file_write($row, $result_csv)
   Sleep($s * $tf)
   saveAllImages()
-
   Sleep($m * $tf)
-  ESCs(3)
-EndFunc
-
-Func SavingSleepTimer($x,$y,$mustBe)
-    For $i = 1 To 1 Step 1
-      $checkCurrent = PixelGetColor($x,$y)
-      If $checkCurrent=$mustBe Then
-      Else
-        $i=$i-1
-        Sleep(50)
-      EndIf
-    Next
-	Sleep(50)
+  repeatKey("{ESC}", 3)
+  file_write($logCount & " Saved Data: " & $row & @CRLF, $log_file)
 EndFunc
 
 Func saveAllImages()
-  TABs(5)
+  repeatKey("{TAB}", 5)
   Send("{ENTER}")
   Sleep($l)
   saveImage()
@@ -110,24 +93,22 @@ Func saveImage()
   MouseClick($MOUSE_CLICK_LEFT, 500, 236, 1)
   Sleep($l)
   copyAllBox() 
-  $currName = ClipGet()
-  $ext = StringSplit($currName, ".")
+  $ext = StringSplit(ClipGet(), ".")
   Sleep($l)
   Global $imgName = $gId & "_" & $imgIdx & "." & $ext[2]
   Sleep($m)
-  Send($imgName)
-  Send("{ENTER}")
-  ToolTip("Saving image: " & $imgName)
+  Send($imgName & "{ENTER}")
   Sleep($l)
-  ToolTip("")
   FileMove($chrome_save_dir & $imgName, $images_result_dir)
-  FileDelete($images_result_dir & $imgName)
-  ; debug("--deleting: " & $images_result_dir & $imgName)
+  FileDelete($chrome_save_dir & $imgName)
   Sleep($m)
+  file_write($logCount & " Saved Image: " & $imgName & @CRLF, $log_file)
 EndFunc
 
 Func killChrome()
+  Sleep($l) ; wait for changes to be saved online
   Send("{CTRLDOWN}w{CTRLUP}")
+  file_write($logCount & " Killed Chrome" & @CRLF, $log_file)
 EndFunc
 
 Func moveCardX($xPos, $yPos, $width)
@@ -138,22 +119,8 @@ Func moveCardX($xPos, $yPos, $width)
   MouseUp("left")
 EndFunc
 
-Func TABs($num)
-  For $i = 1 To $num
-    Send("{TAB}")
-  Next
-EndFunc
-
 Func copyAllBox()
-  Send("{CTRLDOWN}a{CTRLUP}")
-  Send("{CTRLDOWN}c{CTRLUP}")
-  Sleep($s)
-EndFunc
-
-Func ESCs($num)
-  For $i = 1 To $num
-    Send("{ESC}")
-  Next
+  Send("{CTRLDOWN}a{CTRLUP}" & "{CTRLDOWN}c{CTRLUP}")
   Sleep($s)
 EndFunc
 

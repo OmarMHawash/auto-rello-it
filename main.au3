@@ -1,18 +1,22 @@
 #include <AutoItConstants.au3>
 #include "./scripts/constants.au3"
 #include "./scripts/functions.au3"
+#include "./scripts/helpers.au3"
 
-RunWait(@ComSpec & " /c " & $delete_file)
-RunWait(@ComSpec & " /c " & $create_file)
-file_write($csv_header)
+Func main()
+  setupFiles()
+  file_write($logCount & " Starting script..." & @CRLF, $log_file)
+  initTrello()
+  For $i = 1 To 2
+    saveCardData($i)
+    Sleep($m)
+    moveCardX($cardX, $cardY, $list_width)
+    file_write($logCount & " Saved Card: " & $i & @CRLF, $log_file)
+  Next
 
-initTrello()
+  killChrome()
+  file_write($logCount & " Script Finised!" & @CRLF, $log_file)
+EndFunc
 
-For $i = 1 To 4
-  waitScreen($cardX, $cardY, "click")
-  saveCardData($i)
-  Sleep($l)
-  moveCardX($cardX, $cardY, $list_width)
-Next
-
-killChrome()
+; colorTipMouse()
+main()
